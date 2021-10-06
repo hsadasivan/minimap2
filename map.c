@@ -39,6 +39,7 @@ Modified Copyright (C) 2021 Intel Corporation
 #include "bseq.h"
 #include "khash.h"
 #include <x86intrin.h>
+#include<ctime>
 
 #ifdef LISA_HASH
 #include "lisa_hash.h"
@@ -395,7 +396,10 @@ void mm_map_frag(const mm_idx_t *mi, int n_segs, const int *qlens, const char **
 #ifdef MANUAL_PROFILING
 	num_reads++;
 #endif
-
+	//static struct timespec start,end;
+	//static double elapsed=0;
+        //printf("HS: step=1 :: before thread block does chaining\n");
+        //clock_gettime(CLOCK_BOOTTIME,&start);
 	int i, j, rep_len, qlen_sum, n_regs0, n_mini_pos;
 	int max_chain_gap_qry, max_chain_gap_ref, is_splice = !!(opt->flag & MM_F_SPLICE), is_sr = !!(opt->flag & MM_F_SR);
 	uint32_t hash;
@@ -450,9 +454,13 @@ void mm_map_frag(const mm_idx_t *mi, int n_segs, const int *qlens, const char **
 #ifdef MANUAL_PROFILING
 	uint64_t dp_start = __rdtsc();
 #endif
+	return ;
+        //clock_gettime(CLOCK_BOOTTIME,&end);
+        //elapsed+=(end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec)/ 1E9;
+        //printf("HS: seeding time (valid only with 1 thread):%f\n", elapsed);
 	a = mm_chain_dp(max_chain_gap_ref, max_chain_gap_qry, opt->bw, opt->max_chain_skip, opt->max_chain_iter, opt->min_cnt, opt->min_chain_score, opt->chain_gap_scale, is_splice, n_segs, n_a, a, &n_regs0, &u, b->km);
 
-
+	//uncomment for seeging time return ;
 #ifdef MANUAL_PROFILING
 	dp_chaining_time += (__rdtsc() - dp_start);
 #endif
@@ -705,7 +713,7 @@ static void *worker_pipeline(void *shared, int step, void *in)
 		else kt_for(p->n_threads, worker_for, in, ((step_t*)in)->n_frag);
 		return in;
     } else if (step == 2) { // step 2: output
-
+		return (void*) 1;
 		void *km = 0;
         step_t *s = (step_t*)in;
 		const mm_idx_t *mi = p->mi;

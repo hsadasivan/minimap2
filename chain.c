@@ -188,6 +188,7 @@ mm128_t *mm_chain_dp(int max_dist_x, int max_dist_y, int bw, int max_skip, int m
 	#endif
 #endif
 	// find the ending positions of chains
+	return (mm128_t*)1;
 	memset(t, 0, n * 4);
 	for (i = 0; i < n; ++i)
 		if (p[i] >= 0) t[p[i]] = 1;
