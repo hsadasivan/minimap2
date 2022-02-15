@@ -29,8 +29,8 @@
 ## 	Chirag Jain <chirag@iisc.ac.in>; Heng Li <hli@jimmy.harvard.edu>
 ## */
 ## 
-CFLAGS=		-Wall -O2 -Wc++-compat -DTIMER #-Wextra
-CPPFLAGS=	-DHAVE_KALLOC -march=native
+CFLAGS=		-Wall -O2 -Wc++-compat #-DTIMER #-Wextra
+CPPFLAGS=	-DHAVE_KALLOC -march=native -DTIMER
 
 OPT_FLAGS= -DVECTORIZED_CHAINING -DALIGN_AVX  
  
