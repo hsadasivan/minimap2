@@ -93,7 +93,7 @@ mm128_t *mm_chain_dp(int max_dist_x, int max_dist_y, int bw, int max_skip, int m
 	}
 	clock_gettime(CLOCK_BOOTTIME,&end);
         elapsed+=(end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec)/ 1E9;
-        printf("HS: chaining time (pred+backtrac+o/p vector gen) (valid only with 1 thread):%f\n", elapsed);
+        printf("HS: chaining time (pred+DP kernel+o/p vector gen) (valid only with 1 thread):%f\n", elapsed);
     //return (mm128_t*)1;
 	// find the ending positions of chains
 	memset(t, 0, n * 4);

@@ -97,15 +97,15 @@ typedef struct ktp_t {
 
 static void *ktp_worker(void *data)
 {   
-    struct timespec start,end;
+    //struct timespec start,end;
 	ktp_worker_t *w = (ktp_worker_t*)data;
 	ktp_t *p = w->pl;
 	while (w->step < p->n_steps) {
-		// test whether we can kick off the job with this worker
-        if(w->step==1){
-            printf("HS: step=1 :: before thread block does chaining\n");
-            clock_gettime(CLOCK_BOOTTIME,&start);
-        }
+		// test ehether we can kick off the job with this worker
+        //if(w->step==1){
+       //     printf("HS: step=1 :: before thread block does chaining\n");
+       //     clock_gettime(CLOCK_BOOTTIME,&start);
+       // }
 		pthread_mutex_lock(&p->mutex);
 		for (;;) {
 			int i;
@@ -123,10 +123,10 @@ static void *ktp_worker(void *data)
 		// working on w->step
 		w->data = p->func(p->shared, w->step, w->step? w->data : 0); // for the first step, input is NULL
 
-        if(w->step==1){
-        clock_gettime(CLOCK_BOOTTIME,&end);
-        printf("HS: seeding+chaining time:%f\n", (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1E9);
-        }
+       // if(w->step==1){
+       // clock_gettime(CLOCK_BOOTTIME,&end);
+       // printf("HS: seeding+chaining time:%f\n", (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1E9);
+//        }
 		// update step and let other workers know
 		pthread_mutex_lock(&p->mutex);
 		w->step = w->step == p->n_steps - 1 || w->data? (w->step + 1) % p->n_steps : p->n_steps;
