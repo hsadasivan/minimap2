@@ -4,7 +4,7 @@
 #include "minimap.h"
 #include "mmpriv.h"
 #include "kalloc.h"
-
+#include<ctime>
 static const char LogTable256[256] = {
 #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
 	-1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -26,6 +26,11 @@ mm128_t *mm_chain_dp(int max_dist_x, int max_dist_y, int bw, int max_skip, int m
 	uint64_t *u, *u2, sum_qspan = 0;
 	float avg_qspan;
 	mm128_t *b, *w;
+	static struct timespec start,end;
+    	static double elapsed=0;
+
+	
+	clock_gettime(CLOCK_BOOTTIME,&start);
 
 	if (_u) *_u = 0, *n_u_ = 0;
 	if (n == 0 || a == 0) {
@@ -83,7 +88,10 @@ mm128_t *mm_chain_dp(int max_dist_x, int max_dist_y, int bw, int max_skip, int m
 		f[i] = max_f, p[i] = max_j;
 		v[i] = max_j >= 0 && v[max_j] > max_f? v[max_j] : max_f; // v[] keeps the peak score up to i; f[] is the score ending at i, not always the peak
 	}
-    return (mm128_t*)1;
+	clock_gettime(CLOCK_BOOTTIME,&end);
+        elapsed+=(end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec)/ 1E9;
+        printf("HS: chaining time (pred+backtrac+o/p vector gen) (valid only with 1 thread):%f\n", elapsed);
+    //return (mm128_t*)1;
 	// find the ending positions of chains
 	memset(t, 0, n * 4);
 	for (i = 0; i < n; ++i)

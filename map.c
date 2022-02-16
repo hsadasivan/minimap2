@@ -277,7 +277,7 @@ void mm_map_frag(const mm_idx_t *mi, int n_segs, const int *qlens, const char **
     static double elapsed=0;
     
     //printf("HS: step=1 :: before thread block does chaining\n");
-    //clock_gettime(CLOCK_BOOTTIME,&start);
+    clock_gettime(CLOCK_BOOTTIME,&start);
     
 	int i, j, rep_len, qlen_sum, n_regs0, n_mini_pos;
 	int max_chain_gap_qry, max_chain_gap_ref, is_splice = !!(opt->flag & MM_F_SPLICE), is_sr = !!(opt->flag & MM_F_SR);
@@ -321,11 +321,11 @@ void mm_map_frag(const mm_idx_t *mi, int n_segs, const int *qlens, const char **
 		if (max_chain_gap_ref < opt->max_gap) max_chain_gap_ref = opt->max_gap;
 	} else max_chain_gap_ref = opt->max_gap;
 
-        //clock_gettime(CLOCK_BOOTTIME,&end);
-        //elapsed+=(end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec)/ 1E9;
-        //printf("HS: seeding time (valid only with 1 thread):%f\n", elapsed);
+        clock_gettime(CLOCK_BOOTTIME,&end);
+        elapsed+=(end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec)/ 1E9;
+        printf("HS: seeding time (valid only with 1 thread):%f\n", elapsed);
 	a = mm_chain_dp(max_chain_gap_ref, max_chain_gap_qry, opt->bw, opt->max_chain_skip, opt->max_chain_iter, opt->min_cnt, opt->min_chain_score, is_splice, n_segs, n_a, a, &n_regs0, &u, b->km);
-    return ;
+    //return ;
 	if (opt->max_occ > opt->mid_occ && rep_len > 0) {
 		int rechain = 0;
 		if (n_regs0 > 0) { // test if the best chain has all the segments
