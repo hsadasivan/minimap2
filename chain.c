@@ -21,16 +21,19 @@ static inline int ilog2_32(uint32_t v)
 
 mm128_t *mm_chain_dp(int max_dist_x, int max_dist_y, int bw, int max_skip, int max_iter, int min_cnt, int min_sc, int is_cdna, int n_segs, int64_t n, mm128_t *a, int *n_u_, uint64_t **_u, void *km)
 { // TODO: make sure this works when n has more than 32 bits
+	
+	
+	static struct timespec start,end,end1;
+    	static double elapsed=0,elapsed1=0;
+
+	
+	clock_gettime(CLOCK_BOOTTIME,&start);
+
 	int32_t k, *f, *p, *t, *v, n_u, n_v;
 	int64_t i, j, st = 0;
 	uint64_t *u, *u2, sum_qspan = 0;
 	float avg_qspan;
 	mm128_t *b, *w;
-	static struct timespec start,end;
-    	static double elapsed=0;
-
-	
-	clock_gettime(CLOCK_BOOTTIME,&start);
 
 	if (_u) *_u = 0, *n_u_ = 0;
 	if (n == 0 || a == 0) {
@@ -166,5 +169,9 @@ mm128_t *mm_chain_dp(int max_dist_x, int max_dist_y, int bw, int max_skip, int m
 	memcpy(u, u2, n_u * 8);
 	memcpy(b, a, k * sizeof(mm128_t)); // write _a_ to _b_ and deallocate _a_ because _a_ is oversized, sometimes a lot
 	kfree(km, a); kfree(km, w); kfree(km, u2);
+
+	clock_gettime(CLOCK_BOOTTIME,&end1);
+        elapsed1+=(end1.tv_sec - end.tv_sec) + (end1.tv_nsec - end.tv_nsec)/ 1E9;
+        printf("HS: backtracking time (valid only with 1 thread):%f\n", elapsed1);
 	return b;
 }
